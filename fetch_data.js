@@ -29,7 +29,7 @@ async function fetchRecords() {
         const f = item.fields || {};
         const fv = k => {
             const v = f[k];
-            if (v == null) return "";
+            if (v == null || v === "") return "";
             if (Array.isArray(v)) return v.map(x => x.name || x.text || x).join(", ");
             if (typeof v === "object" && v.text) return v.text;
             return String(v).trim();
@@ -48,5 +48,5 @@ async function fetchRecords() {
 
 fetchRecords().then(rows => {
     fs.writeFileSync('data.json', JSON.stringify({ ok: true, rows }, null, 2));
-    console.log("数据拉取成功");
+    console.log("Fetch Complete.");
 }).catch(err => { console.error(err); process.exit(1); });
