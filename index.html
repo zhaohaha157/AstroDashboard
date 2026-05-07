@@ -5,181 +5,125 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AION 模型进展看板</title>
 <style>
-/* 保持你提供代码中的所有样式 */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f3;color:#1a1a18;font-size:13px}
-.page{max-width:1100px;margin:0 auto;padding:1.25rem 1rem}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
-.title{font-size:15px;font-weight:500}
-.subtitle{font-size:11px;color:#888;margin-top:2px}
-.btn{font-size:12px;padding:4px 12px;border-radius:7px;border:0.5px solid #ccc;background:#fff;color:#1a1a18;cursor:pointer}
-.btn:hover{background:#f0f0ee}
-.gb-container{margin-bottom:1.5rem}
-.gb-title{font-size:14px;font-weight:600;margin-bottom:10px;color:#333;display:flex;align-items:center;gap:6px}
-.gb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
-.gb-card{background:#fff;border:0.5px solid #e5e5e0;border-radius:8px;padding:12px;border-left:4px solid #aaa;box-shadow:0 1px 3px rgba(0,0,0,0.02)}
-.gb-mod{font-size:13px;font-weight:600;margin-bottom:8px}
-.gb-sec{font-size:12px;margin-bottom:5px;line-height:1.5}
-.gb-label{color:#888;font-weight:500;margin-right:4px}
-.gb-text{color:#444}
-/* ... (其他样式保持不变) ... */
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
-.sc{background:#fff;border-radius:8px;padding:10px 14px;border:0.5px solid #e5e5e0}
-.sc-label{font-size:11px;color:#888;margin-bottom:3px}
-.sc-val{font-size:21px;font-weight:500}
-.sc-sub{font-size:11px;color:#bbb;margin-top:1px}
-.mods{display:flex;flex-direction:column;gap:8px}
-.mc{background:#fff;border:0.5px solid #e5e5e0;border-radius:11px;overflow:hidden}
-.mh{display:flex;align-items:center;gap:9px;padding:11px 14px;cursor:pointer;user-select:none}
+.page{max-width:1200px;margin:0 auto;padding:1.25rem 1rem}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.title{font-size:16px;font-weight:600}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem}
+.sc{background:#fff;border-radius:8px;padding:12px;border:0.5px solid #e5e5e0}
+.sc-label{font-size:11px;color:#888}
+.sc-val{font-size:22px;font-weight:600;margin:4px 0}
+.gb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:1.5rem}
+.gb-card{background:#fff;border-radius:8px;padding:12px;border-left:4px solid #aaa;box-shadow:0 1px 3px rgba(0,0,0,0.02)}
+.mc{background:#fff;border:0.5px solid #e5e5e0;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.mh{display:flex;align-items:center;padding:12px 16px;cursor:pointer;background:#fff}
 .mh:hover{background:#fafaf8}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.mname{font-size:13px;font-weight:500;flex:1}
-.mmeta{font-size:11px;color:#aaa;margin-right:4px}
-.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:99px;white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;margin-right:10px}
+.mname{font-weight:600;flex:1}
+.mb{border-top:1px solid #eee;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:1000px}
+th{text-align:left;padding:10px 12px;background:#fafaf8;color:#888;font-weight:500;font-size:11px;border-bottom:1px solid #eee}
+td{padding:12px;border-bottom:1px solid #f5f5f5;vertical-align:top;line-height:1.5}
+.vtag{display:inline-block;padding:2px 6px;border-radius:4px;background:#f0f0f0;font-weight:600;font-size:11px}
+.vnote{font-size:11px;color:#888;margin-top:4px;max-width:150px}
+.pill{padding:2px 8px;border-radius:10px;font-size:10px}
 .done{background:#EAF3DE;color:#3B6D11}
 .prog{background:#EEEDFE;color:#534AB7}
-.pend{background:#F1EFE8;color:#5F5E5A}
-.arr{font-size:9px;color:#bbb;transition:transform .18s;margin-left:2px}
-.arr.open{transform:rotate(90deg)}
-.mb{display:none;border-top:0.5px solid #ebebea;overflow-x:auto}
-.mb.open{display:block}
-table{width:100%;border-collapse:collapse;min-width:850px}
-th{font-size:11px;font-weight:500;color:#999;text-align:left;padding:6px 12px;background:#fafaf8;border-bottom:0.5px solid #ebebea;white-space:nowrap}
-td{padding:7px 12px;border-bottom:0.5px solid #f2f2f0;vertical-align:top;line-height:1.55}
-.vtag{display:inline-block;font-size:10px;font-weight:500;padding:1px 5px;border-radius:4px;background:#f5f5f3;border:0.5px solid #ddd;color:#666}
-.up{color:#3B6D11}.down{color:#A32D2D}.neu{color:#999}
-.iss{color:#A32D2D;font-size:11px}
-.plan-text{color:#534AB7;font-size:11px}
-.warn{background:#FCEBEB;color:#A32D2D;padding:1px 5px;border-radius:3px;font-size:11px;font-weight:500}
-.loading{text-align:center;padding:2.5rem;color:#bbb;font-size:13px}
+.up{color:#3B6D11;font-weight:bold}
+.down{color:#A32D2D;font-weight:bold}
+.neu{color:#999}
+.dim{color:#aaa;font-size:11px}
+.iss{color:#A32D2D;font-size:11px;font-weight:500}
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="topbar">
-    <div>
-      <div class="title">AION 模型进展看板</div>
-      <div class="subtitle" id="sub">加载中…</div>
+    <div class="topbar">
+        <div class="title">🚀 AION 模型进展看板</div>
+        <button class="sc" onclick="location.reload()">↺ 刷新数据</button>
     </div>
-    <button class="btn" id="rbtn" onclick="init()">↺ 刷新</button>
-  </div>
-  
-  <div class="summary">
-    <div class="sc"><div class="sc-label">总版本数</div><div class="sc-val" id="s0">—</div><div class="sc-sub">跨所有模块</div></div>
-    <div class="sc"><div class="sc-label">已完成</div><div class="sc-val" id="s1" style="color:#3B6D11">—</div><div class="sc-sub">版本</div></div>
-    <div class="sc"><div class="sc-label">进行中</div><div class="sc-val" id="s2" style="color:#534AB7">—</div><div class="sc-sub">版本</div></div>
-    <div class="sc"><div class="sc-label">待开始</div><div class="sc-val" id="s3" style="color:#888">—</div><div class="sc-sub">版本</div></div>
-  </div>
-
-  <div class="gb-container" id="goals-board"></div>
-
-  <div class="mods" id="mods"><div class="loading">加载中…</div></div>
+    <div class="summary" id="summ"></div>
+    <div class="gb-grid" id="gb"></div>
+    <div id="mods"></div>
 </div>
 
 <script>
-const WORKER_URL = "./data.json"
+const COLORS = {"图像编码器":"#7F77DD","光谱编码器":"#1D9E75","时域编码器":"#D85A30","元数据编码器":"#378ADD","多模态融合":"#BA7517"}
 
-// 这里参考了你代码中的 render 逻辑
-const COLORS = {"图像编码器":"#7F77DD","光谱编码器":"#1D9E75","时域编码器":"#D85A30","元数据编码器":"#378ADD","多模态融合":"#BA7517","021接入":"#D4537E","评测框架":"#888780"}
-const MOD_ORDER = ["图像编码器","光谱编码器","时域编码器","元数据编码器","多模态融合","021接入","评测框架"]
-
-const pill = s => s==="完成"?'<span class="pill done">完成</span>':s==="进行中"?'<span class="pill prog">进行中</span>':`<span class="pill pend">${s||"待开始"}</span>`
-
-function improve(v){
-  if(!v) return '<span class="dim">—</span>'
-  if(v.includes("劣化")) return `<span class="down">${v}</span>`
-  return `<span class="up">${v}</span>`
+function renderTasks(r) {
+    const ts = (r.下游任务||"").split("/").filter(x=>x.trim());
+    const vs = (r.任务当前值||"").split("/");
+    const bs = (r.任务baseline值||"").split("/");
+    if(!ts.length) return '<span class="dim">—</span>';
+    return ts.map((t, i) => {
+        const cur = vs[i] || "—", base = bs[i] || "—";
+        let diff = "";
+        if(!isNaN(parseFloat(cur)) && !isNaN(parseFloat(base)) && parseFloat(base) !== 0) {
+            const p = ((parseFloat(cur)-parseFloat(base))/Math.abs(parseFloat(base))*100).toFixed(1);
+            diff = `<span class="${p>=0?'up':'down'}">${p>=0?'↑':'↓'}${Math.abs(p)}%</span>`;
+        }
+        return `<div style="margin-bottom:4px">${t}: <b>${cur}</b> ${diff} <span class="dim">vs ${base}</span></div>`;
+    }).join("");
 }
 
-function tasks(r){
-  const ts=(r.下游任务||"").split("/").map(s=>s.trim()).filter(s=>s&&s!=="—")
-  if(!ts.length) return '<span class="dim">—</span>'
-  const vs=(r.任务当前值||"").split("/").map(s=>s.trim())
-  const bs=(r.任务baseline值||"").split("/").map(s=>s.trim())
-  return ts.map((t,i)=>{
-    const v=vs[i]||"—",b=bs[i]||"—"
-    return `<div style="margin-bottom:2px">${t}: <b>${v}</b> <span class="dim">vs ${b}</span></div>`
-  }).join("")
-}
+async function init() {
+    const res = await fetch("./data.json?t=" + Date.now());
+    const { rows } = await res.json();
+    
+    // 汇总卡片
+    const done = rows.filter(r=>r.状态==='完成').length;
+    document.getElementById('summ').innerHTML = `
+        <div class="sc"><div class="sc-label">总版本</div><div class="sc-val">${rows.length}</div></div>
+        <div class="sc"><div class="sc-label">已完成</div><div class="sc-val" style="color:#3B6D11">${done}</div></div>
+        <div class="sc"><div class="sc-label">进行中</div><div class="sc-val" style="color:#534AB7">${rows.length-done}</div></div>
+    `;
 
-function render(rows){
-  let done=0,prog=0,pend=0
-  rows.forEach(r=>{if(r.状态==="完成")done++;else if(r.状态==="进行中")prog++;else pend++})
-  document.getElementById("s0").textContent=rows.length
-  document.getElementById("s1").textContent=done
-  document.getElementById("s2").textContent=prog
-  document.getElementById("s3").textContent=pend
-  document.getElementById("sub").textContent="更新于 "+new Date().toLocaleString("zh-CN")
+    const mods = {};
+    rows.forEach(r => { if(!mods[r.模块]) mods[r.模块]=[]; mods[r.模块].push(r); });
 
-  const mods={}
-  rows.forEach(r=>{if(!mods[r.模块])mods[r.模块]=[];mods[r.模块].push(r)})
-  const ordered=[...MOD_ORDER.filter(m=>mods[m]),...Object.keys(mods).filter(m=>!MOD_ORDER.includes(m))]
-
-  // 渲染战略目标看板
-  const gb = document.getElementById("goals-board");
-  gb.innerHTML = `
-    <div class="gb-title">🎯 模块战略目标与当前进展总结</div>
-    <div class="gb-grid">
-      ${ordered.map(mod => {
-        const rs = mods[mod];
-        let target = rs.find(r => r.当前进展总结 || r.阶段目标 || r.最终目标) || rs[0] || {};
+    document.getElementById('mods').innerHTML = Object.keys(mods).map(m => {
+        const rs = mods[m];
+        const id = btoa(encodeURIComponent(m)).replace(/=/g,'');
         return `
-        <div class="gb-card" style="border-left-color:${COLORS[mod]||'#888'}">
-          <div class="gb-mod" style="color:${COLORS[mod]||'#333'}">${mod}</div>
-          <div class="gb-sec"><span class="gb-label">当前进展总结:</span><span class="gb-text">${target.当前进展总结||"暂无"}</span></div>
-          <div class="gb-sec"><span class="gb-label">阶段目标:</span><span class="gb-text">${target.阶段目标||"暂无"}</span></div>
-          <div class="gb-sec"><span class="gb-label">最终目标:</span><span class="gb-text">${target.最终目标||"暂无"}</span></div>
-        </div>`
-      }).join("")}
-    </div>`;
-
-  const el=document.getElementById("mods")
-  el.innerHTML=""
-  ordered.forEach(mod=>{
-    const rs=mods[mod],color=COLORS[mod]||"#888",id="m"+mod.replace(/\s/g,"_")
-    const card=document.createElement("div")
-    card.className="mc"
-    card.innerHTML=`
-    <div class="mh" onclick="tog('${id}')">
-      <div class="dot" style="background:${color}"></div>
-      <div class="mname">${mod}</div>
-      <span class="mmeta">${rs.length} 个版本</span>
-      <span class="arr" id="a${id}">▶</span>
-    </div>
-    <div class="mb" id="${id}">
-      <table>
-        <thead><tr><th>版本</th><th>状态</th><th>数据集</th><th>指标</th><th>下游任务</th><th>下一步</th></tr></thead>
-        <tbody>${rs.map(r=>`
-          <tr>
-            <td><span class="vtag">${r.版本||"—"}</span></td>
-            <td>${pill(r.状态)}</td>
-            <td class="dim">${r.数据集||"—"}</td>
-            <td>${r.指标名称?`<div>${r.指标名称}: ${r.当前值}</div>`:""}</td>
-            <td>${tasks(r)}</td>
-            <td class="plan-text">${r.下一步计划||"—"}</td>
-          </tr>`).join("")}
-        </tbody>
-      </table>
-    </div>`
-    el.appendChild(card)
-  })
+        <div class="mc">
+            <div class="mh" onclick="document.getElementById('${id}').style.display=document.getElementById('${id}').style.display==='none'?'none':'block'">
+                <div class="dot" style="background:${COLORS[m]||'#888'}"></div>
+                <div class="mname">${m}</div>
+                <div class="dim">${rs.length} 个版本</div>
+            </div>
+            <div class="mb" id="${id}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:120px">版本</th><th style="width:70px">状态</th>
+                            <th>数据集</th><th>编码器指标</th><th>任务baseline</th>
+                            <th>下游任务指标</th><th>问题</th><th>下一步计划</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rs.map(r => `
+                        <tr>
+                            <td><span class="vtag">${r.版本||'—'}</span><div class="vnote">${r.版本备注||''}</div></td>
+                            <td><span class="pill ${r.状态==='完成'?'done':'prog'}">${r.状态}</span></td>
+                            <td class="dim">${r.数据集}</td>
+                            <td>
+                                <div>${r.指标名称}: <b>${r.当前值}</b></div>
+                                <div class="dim">vs ${r.AION基线值||'不支持'}</div>
+                                <div class="${r.改进幅度.includes('劣化')?'down':'up'}">${r.改进幅度}</div>
+                            </td>
+                            <td class="dim">${r.任务baseline||'—'}</td>
+                            <td>${renderTasks(r)}</td>
+                            <td class="iss">${r.遇到的问题||'<span class="dim">—</span>'}</td>
+                            <td style="font-size:11px;color:#534AB7">${r.下一步计划||'—'}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>`;
+    }).join("");
 }
-
-function tog(id){
-  document.getElementById(id).classList.toggle("open")
-  document.getElementById("a"+id).classList.toggle("open")
-}
-
-async function init(){
-  try{
-    const res=await fetch(WORKER_URL + "?t=" + Date.now())
-    const data=await res.json()
-    render(data.rows)
-  }catch(e){
-    console.error(e)
-  }
-}
-window.onload = init
+init();
 </script>
 </body>
 </html>
