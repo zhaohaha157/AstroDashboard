@@ -1,5 +1,5 @@
-// fetch_data.js
 const fs = require('fs');
+
 const APP_ID = process.env.FEISHU_APP_ID;
 const APP_SECRET = process.env.FEISHU_APP_SECRET;
 const APP_TOKEN = "CSazbwvezaQslWsSuTscwdwwnDf"; 
@@ -48,5 +48,5 @@ async function fetchRecords() {
 
 fetchRecords().then(rows => {
     fs.writeFileSync('data.json', JSON.stringify({ ok: true, rows }, null, 2));
-    console.log("数据已完整更新");
+    console.log("数据拉取成功");
 }).catch(err => { console.error(err); process.exit(1); });
