@@ -5,7 +5,7 @@ on:
     - cron: '0 * * * *' 
   workflow_dispatch:
 
-# 明确最高读写权限
+# 必须声明写权限
 permissions:
   contents: write
 
@@ -13,29 +13,32 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. 拉取代码，并强制关闭默认的机器人凭证缓存！
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.MY_PAT }}
-          persist-credentials: false 
 
-      # 2. 配置 Node 环境
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3. 运行你的飞书拉取脚本
       - name: Fetch Feishu Data
         env:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
         run: node fetch_data.js
 
-      # 4. 使用业界公认最稳的第三方插件进行提交，杜绝一切 403 报错
-      - name: Commit and Push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Auto-update data.json"
-          file_pattern: 'data.json'
+      - name: 暴力推送数据
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          # 检查是否有数据变化，有变化就提交
+          git add data.json
+          if git diff --staged --quiet; then
+            echo "没有数据更新"
+          else
+            git commit -m "自动更新飞书数据"
+            
+            # 【核心招数】：使用内置 GITHUB_TOKEN 强制推送，解决一切权限和冲突
+            git push "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" main --force
+          fi
