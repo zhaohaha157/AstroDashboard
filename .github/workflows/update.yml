@@ -30,4 +30,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update data.json" && git push)
+          # 提交更改
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update data.json"
+          # 终极暴力推送：强行把秘钥塞进 URL 里
+          git push "https://${{ secrets.MY_PAT }}@github.com/zhaohaha157/AstroDashboard.git" HEAD:main
