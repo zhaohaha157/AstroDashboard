@@ -5,32 +5,37 @@ on:
     - cron: '0 * * * *' 
   workflow_dispatch:
 
+# 明确最高读写权限
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      # 1. 拉取代码，并强制关闭默认的机器人凭证缓存！
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.MY_PAT }}  # 👈 终极绝招：使用你本人的万能钥匙开门
+          token: ${{ secrets.MY_PAT }}
+          persist-credentials: false 
 
+      # 2. 配置 Node 环境
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      # 3. 运行你的飞书拉取脚本
       - name: Fetch Feishu Data
         env:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
         run: node fetch_data.js
 
-      - name: Commit and Push new data
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add data.json
-          # 提交更改
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update data.json"
-          # 终极暴力推送：强行把秘钥塞进 URL 里
-          git push "https://${{ secrets.MY_PAT }}@github.com/zhaohaha157/AstroDashboard.git" HEAD:main
+      # 4. 使用业界公认最稳的第三方插件进行提交，杜绝一切 403 报错
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-update data.json"
+          file_pattern: 'data.json'
